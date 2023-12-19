@@ -72,51 +72,60 @@ function App() {
     let day = currentDate.getDate().toString();
 
     //
-    console.log(month, day, year);
+    console.log(new Date([month, day, year].join("-")));
 
     if (arr[1] === month) {
       toast.error("You cannot change the batch in same month");
       return;
     }
 
-    const updateBatch = await axios.patch(
-      `http://localhost:5000/api/auth/status/${currentUser._id}`,
-      {
-        batch: selectedBatch,
-      }
-    );
+    let now = new Date([year, month, day].join("-"));
+    let userUpdatedDate = new Date(userDate);
+    let diff = (now - userUpdatedDate) / (1000 * 60 * 60 * 24);
+
+    if (diff === 30) {
+      const updateBatch = await axios.patch(
+        `http://localhost:5000/api/auth/batch/${currentUser._id}`,
+        {
+          batch: selectedBatch,
+        }
+      );
+
+      toast.success(updateBatch.data.msg);
+      return;
+    } else {
+      toast.error("You cannot change the batch");
+    }
   };
 
   return (
     <>
+      <select
+        value={selectedBatch}
+        onChange={(e) => setSelectedBatch(e.target.value)}
+        style={inputProps}
+      >
+        <option value="">Select Batch</option>
+        <option value="6-7AM">6-7AM</option>
+        <option value="7-8AM">7-8AM</option>
+        <option value="8-9AM">8-9AM</option>
+        <option value="5-6PM">5-6PM</option>
+      </select>
+      <button onClick={handleBatchUpdate}>Update Batch</button>
       <div>
-        <select
-          value={selectedBatch}
-          onChange={(e) => setSelectedBatch(e.target.value)}
-          style={inputProps}
-        >
-          <option value="">Select Batch</option>
-          <option value="6-7AM">6-7AM</option>
-          <option value="7-8AM">7-8AM</option>
-          <option value="8-9AM">8-9AM</option>
-          <option value="5-6PM">5-6PM</option>
-        </select>
-        <button onClick={handleBatchUpdate}>Update Batch</button>
         <div>
-          <div>
-            Payment Status: {paymentStatus === false ? "Not Paid" : "Paid"}
-          </div>
-          {paymentStatus === false ? (
-            <button onClick={handlePaymentUpdate}>Pay now</button>
-          ) : (
-            <span>Fee Paid</span>
-          )}
+          Payment Status: {paymentStatus === false ? "Not Paid" : "Paid"}
         </div>
-        <div>
-          <button onClick={handleLogOut}>LogOut</button>
-        </div>
-        <ToastContainer />
+        {paymentStatus === false ? (
+          <button onClick={handlePaymentUpdate}>Pay now</button>
+        ) : (
+          <span>Fee Paid</span>
+        )}
       </div>
+      <div>
+        <button onClick={handleLogOut}>LogOut</button>
+      </div>
+      <ToastContainer />
     </>
   );
 }
