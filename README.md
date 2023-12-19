@@ -48,4 +48,9 @@ with Paynow button.The payment status is set false after every 30 days according
 ## ER Diagram 
 ![Screenshot 2023-12-18 221103](https://github.com/Akash-Gottimukkala/Yoga-classes-main/assets/76110994/80c47e6c-d572-462d-86b2-68a7ba8130c5)
 
+## Environment Variables
 
+To run this project, you will need to add the following environment variables to your .env file
+
+PORT = 5000
+MONGO_URL = "mongodb+srv://Yoga_project:S3DdYyRP097UDo65@cluster0.o6inlu4.mongodb.net/?retryWrites=true&w=majority"
